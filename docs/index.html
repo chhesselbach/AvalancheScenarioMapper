@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_36517a508c41f92bccadbc09c00c6224 {
+                #map_6097b45273dbf866155e30511529d85a {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -55,112 +55,51 @@
     
     
 <style>
-  /* --- Title (top-left) --- */
-  .ava-title {
-    position: fixed; top: 10px; left: 10px; z-index: 10001;
-    background: rgba(255,255,255,0.8);
-    border: 1px solid #ccc; border-radius: 10px;
-    padding: 8px 10px; font-family: Arial, sans-serif; font-size: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.1);
-    max-width: 240px; pointer-events: none; text-align: center;
-    transition: opacity .3s ease;
-  }
-  .ava-title.hidden { opacity:0; visibility:hidden; height:0; margin:0; padding:0; }
-  .ava-title b { color:deeppink; font-size:13px; }
-  .ava-title .gif { width:160px; height:auto; display:block; margin:0 auto 6px; }
+  /* Title (top-left) */
+  .ava-title{position:fixed;top:10px;left:10px;z-index:10001;background:rgba(255,255,255,.8);
+    border:1px solid #ccc;border-radius:10px;padding:8px 10px;font-family:Arial,sans-serif;font-size:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,.1);max-width:240px;pointer-events:none;text-align:center;transition:opacity .3s}
+  .ava-title.hidden{opacity:0;visibility:hidden;height:0;margin:0;padding:0}
+  .ava-title b{color:deeppink;font-size:13px}
+  .ava-title .gif{width:160px;height:auto;display:block;margin:0 auto 6px}
 
-  /* --- Bottom-left style panel --- */
-  .ava-style {
-    background: rgba(255,255,255,0.8);
-    padding: 6px 8px;
-    border: 1px solid #ccc; border-radius: 8px;
-    font-family: Arial, sans-serif; font-size: 12px; line-height: 1.25em;
-    box-shadow: 0 1px 3px rgba(0,0,0,.15);
-    min-width: 190px;
-    max-width: 200px;
-  }
-  .ava-style .hdr { font-weight:700; margin:0 0 3px; }
-  .ava-style .row { margin: 1px 0; }
+  /* Show panel (bottom-left) */
+  .ava-style{background:rgba(255,255,255,.9);padding:6px 8px;border:1px solid #ccc;border-radius:8px;
+    font-family:Arial,sans-serif;font-size:12px;line-height:1.25em;box-shadow:0 1px 3px rgba(0,0,0,.15);
+    min-width:210px;max-width:230px}
+  .ava-style .hdr{font-weight:700;margin:0 0 4px}
+  .ava-style .row{margin:2px 0}
+  .ava-style .cb{display:flex;align-items:center;gap:6px}
+  .swatch{display:inline-block;width:40px;height:10px;border-radius:2px;vertical-align:middle}
 
-  /* --- Radios --- */
-  .ava-style .inline.radios {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:nowrap;
-    gap:4px;
-  }
-  .ava-style .inline.radios label {
-    flex:1; text-align:left;
-    white-space:nowrap;
-    font-size:11.5px;
-  }
-  .ava-style .inline.radios input[type="radio"] {
-    margin-right:3px;
-    transform:scale(0.9);
-    vertical-align:middle;
-  }
+  /* Size legend (continuous bar + 3 labels) — NO border */
+  .legend-size{margin-top:6px}
+  .size-grad{width:100%;height:12px;border-radius:3px}
+  .size-labels{display:flex;justify-content:space-between;font-size:11px;margin-top:2px}
+  .size-labels span:nth-child(2){text-align:center;flex:0 0 auto;transform:translateX(-2px)}
+  .size-labels span:first-child,.size-labels span:last-child{flex:0 0 auto}
 
-  /* --- Legends --- */
-  .bar {
-    display:inline-block;
-    width:40px; height:10px;
-    border-radius:2px;
-    vertical-align:middle;
+  /* Transparency buttons (apply to all layers) — thinner */
+  .alpha-row{display:flex;gap:6px;margin:4px 0 6px}
+  .alpha-btn{
+    flex:1;border:1px solid #bbb;border-radius:6px;
+    padding:2px 4px; line-height:1.1;
+    background:#fff;cursor:pointer;text-align:center;
+    font-size:11px;user-select:none
   }
-  .bar-grad {
-    width:120px;
-    background:linear-gradient(to right,#440154,#31688e,#35b779,#fde725);
-  }
-  #legend-size, #legend-rel-1, #legend-rel-2 {
-    display:flex; align-items:center; gap:4px; margin-top:2px;
-  }
+  .alpha-btn.active{border-color:#666;font-weight:700}
 
-  /* --- Layer control (top-right, fit content) --- */
-  .leaflet-control-layers {
-    background: rgba(255,255,255,0.8) !important;
-    border: 1px solid #ccc !important;
-    border-radius: 8px !important;
-    font-family: Arial, sans-serif !important;
-    font-size: 12px !important;
-    line-height: 1.25em;
-    box-shadow: 0 1px 3px rgba(0,0,0,.15);
-    padding: 6px 8px !important;
-    width: fit-content !important;
-    min-width: unset !important;
-    max-width: unset !important;
-  }
-  .leaflet-control-layers .ava-lc-hdr {
-    font-weight:700; margin:4px 0 2px;
-  }
+  /* Layer control fit + headings */
+  .leaflet-control-layers{background:rgba(255,255,255,.8)!important;border:1px solid #ccc!important;border-radius:8px!important;
+    font-family:Arial,sans-serif!important;font-size:12px!important;line-height:1.25em;box-shadow:0 1px 3px rgba(0,0,0,.15);
+    padding:6px 8px!important;width:fit-content!important;min-width:unset!important;max-width:unset!important}
+  .leaflet-control-layers .ava-lc-hdr{font-weight:700;margin:4px 0 2px}
 
-  /* --- Bottom-left positioning + scale bar spacing --- */
-  .leaflet-bottom.leaflet-left .leaflet-control {
-    margin-left: 10px;
-    margin-bottom: 20px;   /* ✅ raised panel above scale bar */
-  }
+  .leaflet-bottom.leaflet-left .leaflet-control{margin-left:10px;margin-bottom:20px}
 
-  /* Ensure Leaflet scale bar stays visible above background */
-  .leaflet-control-scale {
-    z-index: 9999;
-    opacity: 0.95;
-    background: rgba(255,255,255,0.8);
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 2px 4px;
-    margin: 0 10px 6px 10px;  /* small breathing space */
-  }
-
-  /* --- Mobile adjust --- */
-  @media (max-width:420px){
-    .ava-style{min-width:170px;max-width:180px;}
-    .ava-style .inline.radios label{font-size:11px;}
-  }
+  /* kill Leaflet +/- just in case (Python also sets zoom_control=False) */
+  .leaflet-control-zoom{display:none !important;}
 </style>
-
-
-
-
 
 <div id="ava-title" class="ava-title">
   <img class="gif" src="https://media.giphy.com/media/3Xzlefv57zcrVIPPRN/giphy.gif" alt="">
@@ -170,172 +109,145 @@
 
 <script>
 (function(){
+  /* ================================
+   *  IMPORTANT STYLE VARIABLES
+   * ================================ */
+  let FILL_OPACITY = 0.30;        // 👈 transparency for all visible features
+  const CONFIG = {
+    STROKE_WEIGHT: 0,
+    REL_COLOR: "#ff482e",
+    RES_COLOR: "#1e00ff",
+    SIZE_CLASSES: [
+      { color:"#09a2ff", label:"Size 1" },   // 500–2 500
+      { color:"#66ff31", label:""      },   // 2 500–12 500
+      { color:"#fff300", label:"Size 3" },   // 12 500–62 500
+      { color:"#ff0000", label:""      },   // 62 500–1 000 000
+      { color:"#5b0069", label:"Size 5" }   // ≥ 1 000 000
+    ],
+    HIGHLIGHT_BORDER: "red",
+    HIGHLIGHT_WEIGHT: 3.5,
+    HIGHLIGHT_STROKE_OPACITY: 0.5,
+    HIGHLIGHT_EXTRA_FILL: 0.15,
+    HIGHLIGHT_MAX_FILL: 0.55
+  };
+
   const winterUrl = "data/avaScen_Winter_mobile_hex.geojson";
   const springUrl = "data/avaScen_Spring_mobile_hex.geojson";
   const microUrl  = "data/avaScenMaster_avaReportMicroRegionsPilotBrenner_wgs84.geojson";
-
-  const START_ZOOM = 14;
-  const MIN_ZOOM   = 12;
-  const MAX_ZOOM   = 14;
-  const FIT_TO_DATA= false;   // boolean
-  const TITLE_OFF  = 4500; // ms
-  const STYLE_POS  = "bottomleft";
-  const ATTRS      = ['LWDGebietID', 'LKGebiet', 'LKRegion', 'praID', 'resultID', 'modType', 'sector', 'flow', 'praAreaM', 'rSize', 'PPM', 'PEM', 'avaPotential'];
+  const START_ZOOM = 14, MIN_ZOOM = 12, MAX_ZOOM = 14;
+  const FIT_TO_DATA = false;
+  const TITLE_OFF = 4500;
+  const STYLE_POS = "bottomleft";
+  const ATTRS = ['LWDGebietID', 'LKGebiet', 'LKRegion', 'praID', 'resultID', 'modType', 'sector', 'flow', 'praAreaM', 'rSize', 'PPM', 'PEM', 'avaPotential'];
 
   function waitForVars(maxTries){
-    let tries = 0;
-    const iv = setInterval(()=>{
-      const mapObj = window["map_36517a508c41f92bccadbc09c00c6224"];
-      const G_W    = window["feature_group_a0f613477954027aad27a956f9fdd6f7"];
-      const G_S    = window["feature_group_e5c0c23eef74b25a9a3378728be7e96f"];
-      const G_M    = window["feature_group_d835af9df96947d702c38be5b3830d82"];
-      if (mapObj && G_W && G_S && G_M && mapObj.addControl) {
-        clearInterval(iv);
-        boot(mapObj, G_W, G_S, G_M);
-      } else if (++tries > maxTries) {
-        clearInterval(iv);
-        console.error("❌ Leaflet objects not ready.");
-      }
-    }, 120);
+    let tries=0, iv=setInterval(()=>{
+      const mapObj=window["map_6097b45273dbf866155e30511529d85a"], G_W=window["feature_group_2e5e7610d0a554d30ea0739fa762f320"], G_S=window["feature_group_bf97bdd17f0c907b93b25bf315bbe155"], G_M=window["feature_group_2fcd44322e758a94fdfb89946c33677e"];
+      if(mapObj && G_W && G_S && G_M && mapObj.addControl){ clearInterval(iv); boot(mapObj,G_W,G_S,G_M); }
+      else if(++tries>maxTries){ clearInterval(iv); console.error("❌ Leaflet objects not ready."); }
+    },120);
   }
 
   function boot(mapObj, G_W, G_S, G_M){
-    let mode = "relres";
-    let L_W = null, L_S = null;
-    let highlighted = null;
-    let didFit = false;
+    let showRel=true, showRes=true, sizeOn=false;
+    let L_W=null, L_S=null, highlighted=null, didFit=false;
 
-    // Snap integer zooms
-    mapObj.options.zoomSnap = 1;
-    mapObj.options.zoomDelta = 1;
-
-    // Set start zoom once
+    // snap & clamp zoom; (+/- controls are disabled from Python via zoom_control=False)
+    mapObj.options.zoomSnap=1; mapObj.options.zoomDelta=1;
     mapObj.setZoom(Math.min(Math.max(START_ZOOM, MIN_ZOOM), MAX_ZOOM));
 
-    // Hard-stop zoom beyond bounds (wheel, pinch, dblclick, keyboard)
-    const container = mapObj.getContainer ? mapObj.getContainer() : null;
-    function atMin() { return mapObj.getZoom() <= MIN_ZOOM; }
-    function atMax() { return mapObj.getZoom() >= MAX_ZOOM; }
-
-    if (container){
-      container.addEventListener('wheel', (e)=>{
-        const z = mapObj.getZoom();
-        const dy = (e.deltaY !== undefined) ? e.deltaY : (e.wheelDelta ? -e.wheelDelta : 0);
-        const zoomingOut = dy > 0, zoomingIn = dy < 0;
-        if ((zoomingOut && z <= MIN_ZOOM) || (zoomingIn && z >= MAX_ZOOM)) {
-          e.preventDefault(); e.stopPropagation();
-        }
-      }, {passive:false});
-
-      container.addEventListener('touchmove', (e)=>{
-        const z = mapObj.getZoom();
-        if (z <= MIN_ZOOM || z >= MAX_ZOOM) { e.preventDefault(); }
-      }, {passive:false});
-
-      container.addEventListener('dblclick', (e)=>{
-        if (atMax()) { e.preventDefault(); e.stopPropagation(); }
-      }, {passive:false});
-
-      window.addEventListener('keydown', (e)=>{
-        const k = e.key || "";
-        if ((k === '+' || k === '=' ) && atMax()) { e.preventDefault(); e.stopPropagation(); }
-        if ((k === '-' ) && atMin()) { e.preventDefault(); e.stopPropagation(); }
-      });
+    // Add Leaflet scale bar
+    if (L && L.control && L.control.scale) {
+      L.control.scale({metric:true, imperial:false}).addTo(mapObj);
     }
 
-    // Style helpers
-    function pickHex(p, useSize){
-      if (!p) return null;
-      if (useSize) return p.hex_size || p.hexSize || p.hexsize || p.size_hex || p.__size_hex || null;
-      return p.hex_relRes || p.hex_relres || p.hexRelRes || p.hexrelres || p.hex_rel || null;
+    // visibility + styling
+    function isVisibleByType(p){
+      const t=((p&&p.modType)||"").toLowerCase();
+      return (t==="rel" && showRel) || (t==="res" && showRes);
+    }
+    function pickHex(p){
+      if(!p) return null;
+      if(sizeOn) return p.hex_size||p.hexSize||p.hexsize||p.size_hex||p.__size_hex||null;
+      return p.hex_relRes||p.hex_relres||p.hexRelRes||p.hexrelres||p.hex_rel||null;
     }
     function styleFromProps(p){
-      const hex = pickHex(p, mode==="size") || "#808080";
-      return {color: hex, fillColor: hex, weight: 0, fillOpacity: 0.22};
+      const visible=isVisibleByType(p);
+      const hex=pickHex(p)||"#808080";
+      return { color:hex, fillColor:hex, weight:CONFIG.STROKE_WEIGHT,
+               opacity:visible?1:0, fillOpacity:visible?FILL_OPACITY:0 };
     }
     function styleHighlight(p){
-      const base = styleFromProps(p);
-      return {
-        color: "red",             // 🔴 red outline
-        weight: 3.5,              // thicker border
-        opacity: 0.5,             // 70% visible
-        fillColor: base.fillColor,
-        fillOpacity: Math.min(0.45, (base.fillOpacity || 0.25) + 0.15)
-      };
+      const base=styleFromProps(p);
+      return { color:CONFIG.HIGHLIGHT_BORDER, weight:CONFIG.HIGHLIGHT_WEIGHT, opacity:CONFIG.HIGHLIGHT_STROKE_OPACITY,
+               fillColor:base.fillColor,
+               fillOpacity:Math.min(CONFIG.HIGHLIGHT_MAX_FILL,(base.fillOpacity||0)+CONFIG.HIGHLIGHT_EXTRA_FILL) };
     }
-
     function bindPopupsAndHighlight(layer){
-      if (!layer || !layer.eachLayer) return;
+      if(!layer||!layer.eachLayer) return;
       layer.eachLayer(function(ch){
-        const p = ch && ch.feature ? ch.feature.properties : null;
-        if (!p) return;
-
-        let rows="";
-        for (let i=0;i<ATTRS.length;i++){
-          const k = ATTRS[i];
-          if (Object.prototype.hasOwnProperty.call(p,k)){
-            rows += '<tr><td><b>'+k+'</b></td><td>'+p[k]+'</td></tr>';
-          }
-        }
-        if (rows && ch.bindPopup){
-          ch.bindPopup('<table style="font-size:12px">'+rows+'</table>', {maxWidth:260});
-        }
-
+        const p=ch&&ch.feature?ch.feature.properties:null; if(!p) return;
+        let rows=""; for(let k of ATTRS){ if(Object.prototype.hasOwnProperty.call(p,k)) rows+=`<tr><td><b>${k}</b></td><td>${p[k]}</td></tr>`; }
+        if(rows && ch.bindPopup) ch.bindPopup(`<table style="font-size:12px">${rows}</table>`,{maxWidth:260});
         ch.on('click', ()=>{
-          if (highlighted && highlighted.setStyle){
-            const pp = highlighted.feature ? highlighted.feature.properties : null;
-            highlighted.setStyle(styleFromProps(pp));
-          }
-          highlighted = ch;
-          ch.setStyle(styleHighlight(p));
-          if (ch.bringToFront) ch.bringToFront();
-          if (ch.openPopup) ch.openPopup();
+          if(highlighted&&highlighted.setStyle){ const pp=highlighted.feature?highlighted.feature.properties:null; highlighted.setStyle(styleFromProps(pp)); }
+          highlighted=ch; ch.setStyle(styleHighlight(p)); if(ch.bringToFront) ch.bringToFront(); if(ch.openPopup) ch.openPopup();
         });
       });
     }
-
     function applyStyleToGeoJSON(layer){
-      if (!layer || !layer.eachLayer) return;
+      if(!layer||!layer.eachLayer) return;
       layer.eachLayer(function(ch){
-        const p = ch && ch.feature ? ch.feature.properties : null;
-        const s = (highlighted === ch) ? styleHighlight(p) : styleFromProps(p);
-        if (ch && ch.setStyle) ch.setStyle(s);
+        const p=ch&&ch.feature?ch.feature.properties:null;
+        const s=(highlighted===ch)?styleHighlight(p):styleFromProps(p);
+        if(ch&&ch.setStyle) ch.setStyle(s);
       });
     }
-
     function loadGeo(url, intoGroup){
-      return fetch(url, {cache:"no-store"}).then(r=>r.json()).then(geo=>{
-        const layer = L.geoJSON(geo, { style: f=>styleFromProps(f && f.properties ? f.properties : null) });
-        bindPopupsAndHighlight(layer);
-        if (intoGroup) layer.addTo(intoGroup);
-        return layer;
+      return fetch(url,{cache:"no-store"}).then(r=>r.json()).then(geo=>{
+        const layer=L.geoJSON(geo,{style:f=>styleFromProps(f&&f.properties?f.properties:null)});
+        bindPopupsAndHighlight(layer); if(intoGroup) layer.addTo(intoGroup); return layer;
       });
     }
 
-    // Bottom-right style control (compact inline radios)
-    const StyleControl = L.Control.extend({
-      options:{ position:STYLE_POS },
+    /* Show panel (bottom-left) */
+    const StyleControl=L.Control.extend({
+      options:{position:STYLE_POS},
       onAdd:function(map){
-        const div = L.DomUtil.create('div', 'ava-style leaflet-control');
-        div.innerHTML = `
-          <div class="hdr">Map Avalanche ...</div>
-          <div class="row inline tight radios">
-            <label><input type="radio" name="sty" value="relres" checked> Path</label>
-            <label><input type="radio" name="sty" value="size"> Size</label>
+        const div=L.DomUtil.create('div','ava-style leaflet-control');
+        div.innerHTML=`
+          <div class="hdr">Show Avalanche …</div>
+
+          <!-- Transparency (applies to all visible features) -->
+          <div class="alpha-row">
+            <div class="alpha-btn" data-alpha="0.10">10%</div>
+            <div class="alpha-btn active" data-alpha="0.30">30%</div>
+            <div class="alpha-btn" data-alpha="0.50">50%</div>
           </div>
-    
-          <!-- Avalanche Release Size legend (minimal) -->
-          <div id="legend-size" class="row tight" style="display:none;">
-            <span class="bar bar-grad"></span>
-            <span style="display:block;">Release Volume Size</span>
+
+          <div class="row cb">
+            <label><input id="chk-rel" type="checkbox" checked> Release area</label>
+            <span class="swatch" style="background:${CONFIG.REL_COLOR}"></span>
           </div>
-    
-          <!-- Avalanche Path legend (minimal) -->
-          <div id="legend-rel-1" class="row tight" style="display:block;">
-            <span class="bar" style="background:deeppink;"></span><span>Release Area</span>
+          <div class="row cb">
+            <label><input id="chk-res" type="checkbox" checked> Runout area</label>
+            <span class="swatch" style="background:${CONFIG.RES_COLOR}"></span>
           </div>
-          <div id="legend-rel-2" class="row tight" style="display:block;">
-            <span class="bar" style="background:blue;"></span><span>Runout Area</span>
+
+          <hr style="margin:6px 0;border:none;border-top:1px solid #ddd">
+
+          <div class="row cb">
+            <label><input id="chk-size" type="checkbox"> Size (discrete)</label>
+          </div>
+
+          <!-- Size legend -->
+          <div id="legend-size" class="legend-size" style="display:none;">
+            <div id="size-grad" class="size-grad"></div>
+            <div class="size-labels">
+              <span>${CONFIG.SIZE_CLASSES[0].label||"Size 1"}</span>
+              <span>${CONFIG.SIZE_CLASSES[2].label||"Size 3"}</span>
+              <span>${CONFIG.SIZE_CLASSES[4].label||"Size 5"}</span>
+            </div>
           </div>
         `;
         L.DomEvent.disableClickPropagation(div);
@@ -344,98 +256,114 @@
     });
     mapObj.addControl(new StyleControl());
 
+    /* Build continuous gradient bar from the 5 class colors */
+    function paintSizeGradient(){
+      const el=document.getElementById("size-grad"); if(!el) return;
+      const colors=CONFIG.SIZE_CLASSES.map(c=>c.color);
+      const stops=colors.map((c,i)=>`${c} ${(i*100)/(colors.length-1)}%`).join(', ');
+      el.style.background=`linear-gradient(to right, ${stops})`;
+    }
 
-    // Load layers
+    function refreshLegend(){
+      const ls=document.getElementById("legend-size");
+      if(ls) ls.style.display = sizeOn ? "block" : "none";
+      if(sizeOn) paintSizeGradient();
+    }
+    function reStyleAll(){
+      applyStyleToGeoJSON(L_W); applyStyleToGeoJSON(L_S);
+      refreshLegend();
+    }
+    function bindPanel(){
+      const cRel=document.getElementById("chk-rel");
+      const cRes=document.getElementById("chk-res");
+      const cSize=document.getElementById("chk-size");
+      if(!cRel||!cRes||!cSize) return false;
+      cRel.addEventListener('change', ()=>{ showRel=!!cRel.checked; reStyleAll(); });
+      cRes.addEventListener('change', ()=>{ showRes=!!cRes.checked; reStyleAll(); });
+      cSize.addEventListener('change', ()=>{ sizeOn=!!cSize.checked; reStyleAll(); });
+
+      // transparency buttons
+      const alphas=[...document.querySelectorAll('.alpha-btn')];
+      alphas.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          alphas.forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          const v=parseFloat(btn.getAttribute('data-alpha')) || 0.3;
+          FILL_OPACITY = v;         // 👈 live change for all layers/modes
+          reStyleAll();
+        });
+      });
+      return true;
+    }
+
+    // Layer control headings & scenario exclusivity
+    function tweakLayerControl(){
+      const panel=document.querySelector('.leaflet-control-layers'); if(!panel) return false;
+      const base=panel.querySelector('.leaflet-control-layers-base');
+      const overlays=panel.querySelector('.leaflet-control-layers-overlays');
+
+      if (base && !panel.querySelector('.ava-lc-hdr.base')){
+        const hdr=document.createElement('div'); hdr.className='ava-lc-hdr base'; hdr.textContent='Base Layer:';
+        base.parentNode.insertBefore(hdr, base);
+      }
+      if (overlays && !panel.querySelector('.ava-lc-hdr.scn')){
+        const hdr2=document.createElement('div'); hdr2.className='ava-lc-hdr scn'; hdr2.textContent='Choose Scenario:';
+        overlays.parentNode.insertBefore(hdr2, overlays);
+      }
+      // hide Microregions from control UI (group stays on map)
+      if (overlays){
+        const items=[...overlays.querySelectorAll('label')];
+        items.forEach(lab=>{
+          const txt=lab.textContent?lab.textContent.trim():"";
+          if (txt==="Microregions"){
+            const li=lab.closest('div'); if(li&&li.parentNode) li.parentNode.removeChild(li);
+          }
+        });
+      }
+      // make Winter/Spring mutually exclusive
+      if (overlays){
+        const inputs=[...overlays.querySelectorAll('input[type="checkbox"]')];
+        const txt=el=>el.nextSibling && el.nextSibling.textContent ? el.nextSibling.textContent.trim() : "";
+        const cbW=inputs.find(i=>txt(i)==="Winter");
+        const cbS=inputs.find(i=>txt(i)==="Spring");
+        if (cbW && cbS){
+          function ensureExclusive(e){
+            if (e.target.checked){
+              const other=(e.target===cbW)?cbS:cbW;
+              if (other.checked) other.click();
+              reStyleAll();
+            }
+          }
+          cbW.addEventListener('change', ensureExclusive);
+          cbS.addEventListener('change', ensureExclusive);
+        }
+      }
+      return true;
+    }
+
+    /* Load layers */
     Promise.all([
       loadGeo(winterUrl, G_W).then(l=>{L_W=l}),
       loadGeo(springUrl, G_S).then(l=>{L_S=l}),
       fetch(microUrl,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(geo=>{
-        if (!geo) return null;
-        return L.geoJSON(geo, {style:{color:"#666",weight:1,opacity:0.9,fillOpacity:0}}).addTo(G_M);
+        if(!geo) return null;
+        return L.geoJSON(geo,{style:{color:"#666",weight:1,opacity:0.9,fillOpacity:0}}).addTo(G_M);
       }).catch(()=>null)
     ]).then(()=>{
-      // Initial paint; optional single fit
       applyStyleToGeoJSON(L_W); applyStyleToGeoJSON(L_S);
-      if (FIT_TO_DATA && !didFit){
-        const active = (mapObj.hasLayer(G_W) && L_W) ? L_W : ((mapObj.hasLayer(G_S) && L_S) ? L_S : null);
-        try{ if (active){ const b=active.getBounds(); if (b && b.isValid && b.isValid()) mapObj.fitBounds(b,{padding:[10,10]}); } }catch(_){}
-        didFit = true;
-      }
+      refreshLegend(); bindPanel();
 
-      // Style radios → restyle + legend swap
-      function updateLegend(){
-        const showSize = (mode === "size");
-        const elSize = document.getElementById("legend-size");
-        const elR1   = document.getElementById("legend-rel-1");
-        const elR2   = document.getElementById("legend-rel-2");
-        if (elSize) elSize.style.display = showSize ? "block" : "none";
-        if (elR1)   elR1.style.display   = showSize ? "none"  : "block";
-        if (elR2)   elR2.style.display   = showSize ? "none"  : "block";
-      }
-      document.querySelectorAll('input[name="sty"]').forEach(r=>{
-        r.addEventListener('change', e=>{
-          mode = e.target.value;
-          applyStyleToGeoJSON(L_W); applyStyleToGeoJSON(L_S);
-          updateLegend();
-        });
-      });
-      updateLegend();
-
-      // Massage default control: headers, hide Microregions, Winter/Spring exclusive
-      function tweakLayerControl(){
-        const panel = document.querySelector('.leaflet-control-layers');
-        if (!panel) return false;
-
-        const base = panel.querySelector('.leaflet-control-layers-base');
-        const overlays = panel.querySelector('.leaflet-control-layers-overlays');
-
-        if (base && !panel.querySelector('.ava-lc-hdr.base')){
-          const hdr = document.createElement('div'); hdr.className='ava-lc-hdr base'; hdr.textContent='Base Layer:';
-          base.parentNode.insertBefore(hdr, base);
-        }
-        if (overlays && !panel.querySelector('.ava-lc-hdr.scn')){
-          const hdr2 = document.createElement('div'); hdr2.className='ava-lc-hdr scn'; hdr2.textContent='Choose Scenario:';
-          overlays.parentNode.insertBefore(hdr2, overlays);
-        }
-
-        if (overlays){
-          const items = [...overlays.querySelectorAll('label')];
-          items.forEach(lab=>{
-            const txt = lab.textContent ? lab.textContent.trim() : "";
-            if (txt === "Microregions"){
-              const li = lab.closest('div');
-              if (li && li.parentNode) li.parentNode.removeChild(li);
-            }
-          });
-        }
-
-        if (overlays){
-          const inputs = [...overlays.querySelectorAll('input[type="checkbox"]')];
-          const txt = el => el.nextSibling && el.nextSibling.textContent ? el.nextSibling.textContent.trim() : "";
-          const cbW = inputs.find(i=>txt(i)==="Winter");
-          const cbS = inputs.find(i=>txt(i)==="Spring");
-          if (cbW && cbS){
-            function ensureExclusive(e){
-              if (e.target.checked){
-                const other = (e.target === cbW) ? cbS : cbW;
-                if (other.checked) other.click();
-                applyStyleToGeoJSON(L_W); applyStyleToGeoJSON(L_S);
-              }
-            }
-            cbW.addEventListener('change', ensureExclusive);
-            cbS.addEventListener('change', ensureExclusive);
-          }
-        }
-        return true;
-      }
+      // add headings/exclusive behavior after LC renders
       let tries=0, iv=setInterval(()=>{ tries++; if(tweakLayerControl()||tries>40) clearInterval(iv); },120);
 
-      // Hide the title fully
-      const titleEl = document.getElementById("ava-title");
-      if (titleEl){
-        if (TITLE_OFF <= 0) titleEl.classList.add("hidden");
-        else setTimeout(()=>titleEl.classList.add("hidden"), TITLE_OFF);
+      if(FIT_TO_DATA && !didFit){
+        const active=(mapObj.hasLayer(G_W) && L_W)?L_W:((mapObj.hasLayer(G_S) && L_S)?L_S:null);
+        try{ if(active){ const b=active.getBounds(); if(b && b.isValid && b.isValid()) mapObj.fitBounds(b,{padding:[10,10]}); } }catch(_){}
+        didFit=true;
       }
+
+      const titleEl=document.getElementById("ava-title");
+      if(titleEl){ if(TITLE_OFF<=0) titleEl.classList.add("hidden"); else setTimeout(()=>titleEl.classList.add("hidden"), TITLE_OFF); }
     }).catch(err=>console.error("❌ load error", err));
   }
 
@@ -444,20 +372,20 @@
 </script>
 
     
-            <div class="folium-map" id="map_36517a508c41f92bccadbc09c00c6224" ></div>
+            <div class="folium-map" id="map_6097b45273dbf866155e30511529d85a" ></div>
         
 </body>
 <script>
     
     
-            var map_36517a508c41f92bccadbc09c00c6224 = L.map(
-                "map_36517a508c41f92bccadbc09c00c6224",
+            var map_6097b45273dbf866155e30511529d85a = L.map(
+                "map_6097b45273dbf866155e30511529d85a",
                 {
                     center: [46.9914, 11.416055],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 14,
-  "zoomControl": true,
+  "zoomControl": false,
   "preferCanvas": true,
 }
 
@@ -468,7 +396,7 @@
 
         
     
-            var tile_layer_3c6f1b8daa4f65930153bcadb211f570 = L.tileLayer(
+            var tile_layer_62d80ba8b41f61ba1318b3ba0b8969e5 = L.tileLayer(
                 "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                 {
   "minZoom": 0,
@@ -485,10 +413,10 @@
             );
         
     
-            tile_layer_3c6f1b8daa4f65930153bcadb211f570.addTo(map_36517a508c41f92bccadbc09c00c6224);
+            tile_layer_62d80ba8b41f61ba1318b3ba0b8969e5.addTo(map_6097b45273dbf866155e30511529d85a);
         
     
-            var tile_layer_085fc25800986fccd308c8f515042574 = L.tileLayer(
+            var tile_layer_586acb2940ec2a1ca6577f7bc4cce9b5 = L.tileLayer(
                 "https://tiles.bergfex.at/styles/bergfex-osm/{z}/{x}/{y}.jpg",
                 {
   "minZoom": 0,
@@ -505,52 +433,52 @@
             );
         
     
-            tile_layer_085fc25800986fccd308c8f515042574.addTo(map_36517a508c41f92bccadbc09c00c6224);
+            tile_layer_586acb2940ec2a1ca6577f7bc4cce9b5.addTo(map_6097b45273dbf866155e30511529d85a);
         
     
-            var feature_group_a0f613477954027aad27a956f9fdd6f7 = L.featureGroup(
+            var feature_group_2e5e7610d0a554d30ea0739fa762f320 = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_a0f613477954027aad27a956f9fdd6f7.addTo(map_36517a508c41f92bccadbc09c00c6224);
+            feature_group_2e5e7610d0a554d30ea0739fa762f320.addTo(map_6097b45273dbf866155e30511529d85a);
         
     
-            var feature_group_e5c0c23eef74b25a9a3378728be7e96f = L.featureGroup(
+            var feature_group_bf97bdd17f0c907b93b25bf315bbe155 = L.featureGroup(
                 {
 }
             );
         
     
-            var feature_group_d835af9df96947d702c38be5b3830d82 = L.featureGroup(
+            var feature_group_2fcd44322e758a94fdfb89946c33677e = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_d835af9df96947d702c38be5b3830d82.addTo(map_36517a508c41f92bccadbc09c00c6224);
+            feature_group_2fcd44322e758a94fdfb89946c33677e.addTo(map_6097b45273dbf866155e30511529d85a);
         
     
-            var layer_control_e4eede0300f38c3a65302665e146ae38_layers = {
+            var layer_control_bd68132d8e3d11bf1422b7d0377140db_layers = {
                 base_layers : {
-                    "Light Gray" : tile_layer_3c6f1b8daa4f65930153bcadb211f570,
-                    "Bergfex Topo" : tile_layer_085fc25800986fccd308c8f515042574,
+                    "Light Gray" : tile_layer_62d80ba8b41f61ba1318b3ba0b8969e5,
+                    "Bergfex Topo" : tile_layer_586acb2940ec2a1ca6577f7bc4cce9b5,
                 },
                 overlays :  {
-                    "Winter" : feature_group_a0f613477954027aad27a956f9fdd6f7,
-                    "Spring" : feature_group_e5c0c23eef74b25a9a3378728be7e96f,
+                    "Winter" : feature_group_2e5e7610d0a554d30ea0739fa762f320,
+                    "Spring" : feature_group_bf97bdd17f0c907b93b25bf315bbe155,
                 },
             };
-            let layer_control_e4eede0300f38c3a65302665e146ae38 = L.control.layers(
-                layer_control_e4eede0300f38c3a65302665e146ae38_layers.base_layers,
-                layer_control_e4eede0300f38c3a65302665e146ae38_layers.overlays,
+            let layer_control_bd68132d8e3d11bf1422b7d0377140db = L.control.layers(
+                layer_control_bd68132d8e3d11bf1422b7d0377140db_layers.base_layers,
+                layer_control_bd68132d8e3d11bf1422b7d0377140db_layers.overlays,
                 {
   "position": "topright",
   "collapsed": false,
   "autoZIndex": true,
 }
-            ).addTo(map_36517a508c41f92bccadbc09c00c6224);
+            ).addTo(map_6097b45273dbf866155e30511529d85a);
 
         
 </script>
