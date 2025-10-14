@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_5275caa45f2aef6d5dc7f91c09928db2 {
+                #map_f6f61c64617c38b2da018c6edd1a49b8 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -108,9 +108,20 @@
   /* Size legend (continuous bar + 3 labels) — NO border */
   .legend-size{margin-top:6px}
   .size-grad{width:100%;height:12px;border-radius:3px}
-  .size-labels{display:flex;justify-content:space-between;font-size:11px;margin-top:2px}
-  .size-labels span:nth-child(2){text-align:center;flex:0 0 auto;transform:translateX(-2px)}
-  .size-labels span:first-child,.size-labels span:last-child{flex:0 0 auto}
+  /* Size legend labels alignment */
+  .size-labels{
+    display:flex;
+    gap:0;
+    font-size:11px;
+    margin-top:2px;
+  }
+  .size-labels span{
+    flex:1 1 33%;
+  }
+  .size-labels span:first-child{ text-align:left; }
+  .size-labels span:nth-child(2){ text-align:center; transform:none; } /* remove prior translate */
+  .size-labels span:last-child{ text-align:right; }
+
 
   /* Hide default Leaflet layer control (we recreated it inside Settings) */
   .leaflet-control-layers{display:none !important;}
@@ -118,6 +129,17 @@
   .leaflet-bottom.leaflet-left .leaflet-control{margin-left:10px;margin-bottom:20px}
   /* Hide Leaflet +/- (Python also sets zoom_control=False) */
   .leaflet-control-zoom{display:none !important;}
+
+  /* Popup: 80% opaque background, crisp text */
+  .ava-popup .leaflet-popup-content-wrapper{
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    border-radius: 8px;
+  }
+  .ava-popup .leaflet-popup-tip{
+    background: rgba(255,255,255,0.8);
+  }
+
 
   @media (max-width:480px){
     .ava-style{min-width:200px}
@@ -146,11 +168,11 @@
     REL_COLOR: "#ff00ff",
     RES_COLOR: "#1e00ff",
     SIZE_CLASSES: [
-      { color:"#09a2ff", label:"Size 1" },
-      { color:"#66ff31", label:""      },
-      { color:"#fff300", label:"Size 3"},
-      { color:"#ff0000", label:""      },
-      { color:"#5b0069", label:"Size 5"}
+      { color:"#09a2ff", label:"Size 1<br>1 LKW" },
+      { color:"#66ff31", label:""                  },
+      { color:"#fff300", label:"Size 3<br>100 LKW"},
+      { color:"#ff0000", label:""                  },
+      { color:"#5b0069", label:"Size 5<br>10.000 LKW"},
     ],
     HIGHLIGHT_BORDER: "red",
     HIGHLIGHT_WEIGHT: 3.5,
@@ -166,6 +188,11 @@
   const bannerWinter = "data/avaScenWinter.png";
   const bannerSpring = "data/avaScenSpring.png";
 
+  // Reuse page's ?v=... to bust image cache (falls back to now)
+  const BUST  = new URLSearchParams(location.search).get('v') || Date.now();
+  const CACHE = '?v=' + BUST;
+
+
   const START_ZOOM = 14, MIN_ZOOM = 12, MAX_ZOOM = 14;
   const FIT_TO_DATA = false;
   const TITLE_OFF = 4500;
@@ -174,9 +201,9 @@
 
   function waitForVars(maxTries){
     let tries=0, iv=setInterval(()=>{
-      const mapObj=window["map_5275caa45f2aef6d5dc7f91c09928db2"],
-            G_W=window["feature_group_32895fa3e971ae72c3e98abef6c4536c"], G_S=window["feature_group_bd5306004ece21860879203c1a8fc552"], G_M=window["feature_group_895b6952d060163d12043fe27dba47c4"],
-            BASE_LIGHT=window["tile_layer_c7175d37d554b8e2104f412fba1eb161"], BASE_BERGFEX=window["tile_layer_43c7ea93dd1b7ed830326e5bbdd62836"];
+      const mapObj=window["map_f6f61c64617c38b2da018c6edd1a49b8"],
+            G_W=window["feature_group_bbb3dd947a3decff2b3fe6e07d1699bf"], G_S=window["feature_group_6fa3b37622beb92f3a55772018132a49"], G_M=window["feature_group_7cf7583c527122ae30abbb67673710b4"],
+            BASE_LIGHT=window["tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f"], BASE_BERGFEX=window["tile_layer_59eaebe1fc53231287ae1ab914ba6445"];
       if(mapObj && G_W && G_S && G_M && BASE_LIGHT && BASE_BERGFEX && mapObj.addControl){
         clearInterval(iv); boot(mapObj,G_W,G_S,G_M,BASE_LIGHT,BASE_BERGFEX);
       } else if(++tries>maxTries){ clearInterval(iv); console.error("❌ Leaflet objects not ready."); }
@@ -199,9 +226,9 @@
 
     // banner helpers
     function updateBanner(){
-      const img=document.getElementById('ava-banner-img');
-      if(!img) return;
-      img.src = (scenario==='winter') ? bannerWinter : bannerSpring;
+      const img = document.getElementById('ava-banner-img');
+      if (!img) return;
+      img.src = ((scenario === 'winter') ? bannerWinter : bannerSpring) + CACHE;
     }
 
     // visibility + styling
@@ -230,11 +257,27 @@
       if(!layer||!layer.eachLayer) return;
       layer.eachLayer(function(ch){
         const p=ch&&ch.feature?ch.feature.properties:null; if(!p) return;
-        let rows=""; for(let k of ATTRS){ if(Object.prototype.hasOwnProperty.call(p,k)) rows+=`<tr><td><b>${k}</b></td><td>${p[k]}</td></tr>`; }
-        if(rows && ch.bindPopup) ch.bindPopup(`<table style="font-size:12px">${rows}</table>`,{maxWidth:260});
+        let rows="";
+        for(let k of ATTRS){
+          if(Object.prototype.hasOwnProperty.call(p,k)){
+            rows+=`<tr><td><b>${k}</b></td><td>${p[k]}</td></tr>`;
+          }
+        }
+        if(rows && ch.bindPopup){
+          ch.bindPopup(
+            `<table style="font-size:11px">${rows}</table>`,
+            { maxWidth:270, className:'ava-popup' }
+          );
+        }
         ch.on('click', ()=>{
-          if(highlighted&&highlighted.setStyle){ const pp=highlighted.feature?highlighted.feature.properties:null; highlighted.setStyle(styleFromProps(pp)); }
-          highlighted=ch; ch.setStyle(styleHighlight(p)); if(ch.bringToFront) ch.bringToFront(); if(ch.openPopup) ch.openPopup();
+          if(highlighted&&highlighted.setStyle){
+            const pp=highlighted.feature?highlighted.feature.properties:null;
+            highlighted.setStyle(styleFromProps(pp));
+          }
+          highlighted=ch;
+          ch.setStyle(styleHighlight(p));
+          if(ch.bringToFront) ch.bringToFront();
+          if(ch.openPopup) ch.openPopup();
         });
       });
     }
@@ -441,14 +484,14 @@
 </script>
 
     
-            <div class="folium-map" id="map_5275caa45f2aef6d5dc7f91c09928db2" ></div>
+            <div class="folium-map" id="map_f6f61c64617c38b2da018c6edd1a49b8" ></div>
         
 </body>
 <script>
     
     
-            var map_5275caa45f2aef6d5dc7f91c09928db2 = L.map(
-                "map_5275caa45f2aef6d5dc7f91c09928db2",
+            var map_f6f61c64617c38b2da018c6edd1a49b8 = L.map(
+                "map_f6f61c64617c38b2da018c6edd1a49b8",
                 {
                     center: [46.9914, 11.416055],
                     crs: L.CRS.EPSG3857,
@@ -465,7 +508,7 @@
 
         
     
-            var tile_layer_c7175d37d554b8e2104f412fba1eb161 = L.tileLayer(
+            var tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f = L.tileLayer(
                 "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                 {
   "minZoom": 0,
@@ -482,10 +525,10 @@
             );
         
     
-            tile_layer_c7175d37d554b8e2104f412fba1eb161.addTo(map_5275caa45f2aef6d5dc7f91c09928db2);
+            tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
         
     
-            var tile_layer_43c7ea93dd1b7ed830326e5bbdd62836 = L.tileLayer(
+            var tile_layer_59eaebe1fc53231287ae1ab914ba6445 = L.tileLayer(
                 "https://tiles.bergfex.at/styles/bergfex-osm/{z}/{x}/{y}.jpg",
                 {
   "minZoom": 0,
@@ -502,52 +545,52 @@
             );
         
     
-            tile_layer_43c7ea93dd1b7ed830326e5bbdd62836.addTo(map_5275caa45f2aef6d5dc7f91c09928db2);
+            tile_layer_59eaebe1fc53231287ae1ab914ba6445.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
         
     
-            var feature_group_32895fa3e971ae72c3e98abef6c4536c = L.featureGroup(
+            var feature_group_bbb3dd947a3decff2b3fe6e07d1699bf = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_32895fa3e971ae72c3e98abef6c4536c.addTo(map_5275caa45f2aef6d5dc7f91c09928db2);
+            feature_group_bbb3dd947a3decff2b3fe6e07d1699bf.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
         
     
-            var feature_group_bd5306004ece21860879203c1a8fc552 = L.featureGroup(
+            var feature_group_6fa3b37622beb92f3a55772018132a49 = L.featureGroup(
                 {
 }
             );
         
     
-            var feature_group_895b6952d060163d12043fe27dba47c4 = L.featureGroup(
+            var feature_group_7cf7583c527122ae30abbb67673710b4 = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_895b6952d060163d12043fe27dba47c4.addTo(map_5275caa45f2aef6d5dc7f91c09928db2);
+            feature_group_7cf7583c527122ae30abbb67673710b4.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
         
     
-            var layer_control_d335a0083c2b79d03dc50e878535c032_layers = {
+            var layer_control_577dc15723b7ae3cd3f92fc3f5b10386_layers = {
                 base_layers : {
-                    "Light Gray" : tile_layer_c7175d37d554b8e2104f412fba1eb161,
-                    "Bergfex Topo" : tile_layer_43c7ea93dd1b7ed830326e5bbdd62836,
+                    "Light Gray" : tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f,
+                    "Bergfex Topo" : tile_layer_59eaebe1fc53231287ae1ab914ba6445,
                 },
                 overlays :  {
-                    "Winter" : feature_group_32895fa3e971ae72c3e98abef6c4536c,
-                    "Spring" : feature_group_bd5306004ece21860879203c1a8fc552,
+                    "Winter" : feature_group_bbb3dd947a3decff2b3fe6e07d1699bf,
+                    "Spring" : feature_group_6fa3b37622beb92f3a55772018132a49,
                 },
             };
-            let layer_control_d335a0083c2b79d03dc50e878535c032 = L.control.layers(
-                layer_control_d335a0083c2b79d03dc50e878535c032_layers.base_layers,
-                layer_control_d335a0083c2b79d03dc50e878535c032_layers.overlays,
+            let layer_control_577dc15723b7ae3cd3f92fc3f5b10386 = L.control.layers(
+                layer_control_577dc15723b7ae3cd3f92fc3f5b10386_layers.base_layers,
+                layer_control_577dc15723b7ae3cd3f92fc3f5b10386_layers.overlays,
                 {
   "position": "topright",
   "collapsed": false,
   "autoZIndex": true,
 }
-            ).addTo(map_5275caa45f2aef6d5dc7f91c09928db2);
+            ).addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
 
         
 </script>
