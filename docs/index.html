@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_f6f61c64617c38b2da018c6edd1a49b8 {
+                #map_e0bb20fa7e52e6085047ed7d1d16b161 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -201,9 +201,9 @@
 
   function waitForVars(maxTries){
     let tries=0, iv=setInterval(()=>{
-      const mapObj=window["map_f6f61c64617c38b2da018c6edd1a49b8"],
-            G_W=window["feature_group_bbb3dd947a3decff2b3fe6e07d1699bf"], G_S=window["feature_group_6fa3b37622beb92f3a55772018132a49"], G_M=window["feature_group_7cf7583c527122ae30abbb67673710b4"],
-            BASE_LIGHT=window["tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f"], BASE_BERGFEX=window["tile_layer_59eaebe1fc53231287ae1ab914ba6445"];
+      const mapObj=window["map_e0bb20fa7e52e6085047ed7d1d16b161"],
+            G_W=window["feature_group_99ceddd242825670ab0bdff1be4e6a8f"], G_S=window["feature_group_8feeaeeedf0cb8541cc5679144f459ef"], G_M=window["feature_group_789fc22b95a26a5537ad78e10232fd37"],
+            BASE_LIGHT=window["tile_layer_9c379f5cfe950550859ef831aa37f544"], BASE_BERGFEX=window["tile_layer_7d631e6496379c7c51c04e12ba5fd084"];
       if(mapObj && G_W && G_S && G_M && BASE_LIGHT && BASE_BERGFEX && mapObj.addControl){
         clearInterval(iv); boot(mapObj,G_W,G_S,G_M,BASE_LIGHT,BASE_BERGFEX);
       } else if(++tries>maxTries){ clearInterval(iv); console.error("❌ Leaflet objects not ready."); }
@@ -484,14 +484,14 @@
 </script>
 
     
-            <div class="folium-map" id="map_f6f61c64617c38b2da018c6edd1a49b8" ></div>
+            <div class="folium-map" id="map_e0bb20fa7e52e6085047ed7d1d16b161" ></div>
         
 </body>
 <script>
     
     
-            var map_f6f61c64617c38b2da018c6edd1a49b8 = L.map(
-                "map_f6f61c64617c38b2da018c6edd1a49b8",
+            var map_e0bb20fa7e52e6085047ed7d1d16b161 = L.map(
+                "map_e0bb20fa7e52e6085047ed7d1d16b161",
                 {
                     center: [46.9914, 11.416055],
                     crs: L.CRS.EPSG3857,
@@ -508,7 +508,7 @@
 
         
     
-            var tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f = L.tileLayer(
+            var tile_layer_9c379f5cfe950550859ef831aa37f544 = L.tileLayer(
                 "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                 {
   "minZoom": 0,
@@ -525,10 +525,10 @@
             );
         
     
-            tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
+            tile_layer_9c379f5cfe950550859ef831aa37f544.addTo(map_e0bb20fa7e52e6085047ed7d1d16b161);
         
     
-            var tile_layer_59eaebe1fc53231287ae1ab914ba6445 = L.tileLayer(
+            var tile_layer_7d631e6496379c7c51c04e12ba5fd084 = L.tileLayer(
                 "https://tiles.bergfex.at/styles/bergfex-osm/{z}/{x}/{y}.jpg",
                 {
   "minZoom": 0,
@@ -545,52 +545,52 @@
             );
         
     
-            tile_layer_59eaebe1fc53231287ae1ab914ba6445.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
+            tile_layer_7d631e6496379c7c51c04e12ba5fd084.addTo(map_e0bb20fa7e52e6085047ed7d1d16b161);
         
     
-            var feature_group_bbb3dd947a3decff2b3fe6e07d1699bf = L.featureGroup(
+            var feature_group_99ceddd242825670ab0bdff1be4e6a8f = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_bbb3dd947a3decff2b3fe6e07d1699bf.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
+            feature_group_99ceddd242825670ab0bdff1be4e6a8f.addTo(map_e0bb20fa7e52e6085047ed7d1d16b161);
         
     
-            var feature_group_6fa3b37622beb92f3a55772018132a49 = L.featureGroup(
+            var feature_group_8feeaeeedf0cb8541cc5679144f459ef = L.featureGroup(
                 {
 }
             );
         
     
-            var feature_group_7cf7583c527122ae30abbb67673710b4 = L.featureGroup(
+            var feature_group_789fc22b95a26a5537ad78e10232fd37 = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_7cf7583c527122ae30abbb67673710b4.addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
+            feature_group_789fc22b95a26a5537ad78e10232fd37.addTo(map_e0bb20fa7e52e6085047ed7d1d16b161);
         
     
-            var layer_control_577dc15723b7ae3cd3f92fc3f5b10386_layers = {
+            var layer_control_a109549ebb6c8dfef9afdbb4996b6c72_layers = {
                 base_layers : {
-                    "Light Gray" : tile_layer_c2bffde9d3bf0b0f9cdcdbd69087390f,
-                    "Bergfex Topo" : tile_layer_59eaebe1fc53231287ae1ab914ba6445,
+                    "Light Gray" : tile_layer_9c379f5cfe950550859ef831aa37f544,
+                    "Bergfex Topo" : tile_layer_7d631e6496379c7c51c04e12ba5fd084,
                 },
                 overlays :  {
-                    "Winter" : feature_group_bbb3dd947a3decff2b3fe6e07d1699bf,
-                    "Spring" : feature_group_6fa3b37622beb92f3a55772018132a49,
+                    "Winter" : feature_group_99ceddd242825670ab0bdff1be4e6a8f,
+                    "Spring" : feature_group_8feeaeeedf0cb8541cc5679144f459ef,
                 },
             };
-            let layer_control_577dc15723b7ae3cd3f92fc3f5b10386 = L.control.layers(
-                layer_control_577dc15723b7ae3cd3f92fc3f5b10386_layers.base_layers,
-                layer_control_577dc15723b7ae3cd3f92fc3f5b10386_layers.overlays,
+            let layer_control_a109549ebb6c8dfef9afdbb4996b6c72 = L.control.layers(
+                layer_control_a109549ebb6c8dfef9afdbb4996b6c72_layers.base_layers,
+                layer_control_a109549ebb6c8dfef9afdbb4996b6c72_layers.overlays,
                 {
   "position": "topright",
   "collapsed": false,
   "autoZIndex": true,
 }
-            ).addTo(map_f6f61c64617c38b2da018c6edd1a49b8);
+            ).addTo(map_e0bb20fa7e52e6085047ed7d1d16b161);
 
         
 </script>
