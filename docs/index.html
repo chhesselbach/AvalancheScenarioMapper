@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_374582459e8b7093fde179296401718b {
+                #map_420d44bd8e24fe1c6f4971d5cea7b38b {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,23 +54,56 @@
 <body>
     
     
-<style>
-  /* Title (top-left) */
-  .ava-title{position:fixed;top:10px;left:10px;z-index:10001;background:rgba(255,255,255,.8);
-    border:1px solid #ccc;border-radius:10px;padding:8px 10px;font-family:Arial,sans-serif;font-size:12px;
-    box-shadow:0 1px 3px rgba(0,0,0,.1);max-width:240px;pointer-events:none;text-align:center;transition:opacity .3s}
-  .ava-title.hidden{opacity:0;visibility:hidden;height:0;margin:0;padding:0}
-  .ava-title b{color:deeppink;font-size:13px}
-  .ava-title .gif{width:160px;height:auto;display:block;margin:0 auto 6px}
+<!-- self cache-bust so the same QR/URL always fetches the latest build -->
+<script>
+(function () {
+  if (!/([?&])v=/.test(location.search)) {
+    var sep = location.search ? '&' : '?';
+    var bust = 'v=' + Date.now();
+    location.replace(location.pathname + location.search + sep + bust + location.hash);
+  }
+})();
+</script>
 
-  /* Show panel (bottom-left) */
+<style>
+  /* -------- LOADER (fake) -------- */
+  #ava-loader{
+    position:fixed; inset:0; z-index:20000;
+    background:rgba(255,255,255,0.6);
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .35s ease;
+  }
+  #ava-loader.hide{opacity:0}
+  .loader-box{
+    text-align:center; pointer-events:none;
+  }
+  .loader-box img{width:180px; height:auto; display:block; margin:0 auto 6px}
+  .loader-title{font:700 18px/1.2 Arial, sans-serif; color:#ff00ff; margin:0 0 4px}
+  .loader-sub{font:12px Arial, sans-serif; color:#333}
+
+  /* Top banner (70% width, centered) */
+  #ava-banner{position:fixed;top:0;left:0;width:100%;z-index:10000;pointer-events:none;display:flex;justify-content:center}
+  #ava-banner img{width:70%;height:auto;opacity:0.7;display:block}
+
+  /* Settings panel (bottom-left, collapsible) */
   .ava-style{background:rgba(255,255,255,.9);padding:6px 8px;border:1px solid #ccc;border-radius:8px;
     font-family:Arial,sans-serif;font-size:12px;line-height:1.25em;box-shadow:0 1px 3px rgba(0,0,0,.15);
-    min-width:210px;max-width:230px}
-  .ava-style .hdr{font-weight:700;margin:0 0 4px}
-  .ava-style .row{margin:2px 0}
+    min-width:220px;max-width:240px}
+  .ava-style .hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    font-weight:700;margin:0 0 4px;cursor:pointer;user-select:none}
+  .ava-style .hdr .caret{font-weight:700;font-size:16px;line-height:1;transform:translateY(-1px)}
+  .ava-style .body{transition:max-height .2s ease, opacity .2s ease}
+  .ava-style.collapsed .body{max-height:0;opacity:.0;overflow:hidden}
+  .ava-style .row{margin:3px 0}
   .ava-style .cb{display:flex;align-items:center;gap:6px}
+  .ava-style .radio-row label{display:block;margin:2px 0}
   .swatch{display:inline-block;width:40px;height:10px;border-radius:2px;vertical-align:middle}
+
+  /* Transparency buttons (apply to all layers) — thinner */
+  .alpha-row{display:flex;gap:6px;margin:4px 0 6px}
+  .alpha-btn{flex:1;border:1px solid #bbb;border-radius:6px;padding:2px 4px;line-height:1.1;background:#fff;
+    cursor:pointer;text-align:center;font-size:11px;user-select:none}
+  .alpha-btn.active{border-color:#666;font-weight:700}
 
   /* Size legend (continuous bar + 3 labels) — NO border */
   .legend-size{margin-top:6px}
@@ -79,50 +112,45 @@
   .size-labels span:nth-child(2){text-align:center;flex:0 0 auto;transform:translateX(-2px)}
   .size-labels span:first-child,.size-labels span:last-child{flex:0 0 auto}
 
-  /* Transparency buttons (apply to all layers) — thinner */
-  .alpha-row{display:flex;gap:6px;margin:4px 0 6px}
-  .alpha-btn{
-    flex:1;border:1px solid #bbb;border-radius:6px;
-    padding:2px 4px; line-height:1.1;
-    background:#fff;cursor:pointer;text-align:center;
-    font-size:11px;user-select:none
-  }
-  .alpha-btn.active{border-color:#666;font-weight:700}
-
-  /* Layer control fit + headings */
-  .leaflet-control-layers{background:rgba(255,255,255,.8)!important;border:1px solid #ccc!important;border-radius:8px!important;
-    font-family:Arial,sans-serif!important;font-size:12px!important;line-height:1.25em;box-shadow:0 1px 3px rgba(0,0,0,.15);
-    padding:6px 8px!important;width:fit-content!important;min-width:unset!important;max-width:unset!important}
-  .leaflet-control-layers .ava-lc-hdr{font-weight:700;margin:4px 0 2px}
+  /* Hide default Leaflet layer control (we recreated it inside Settings) */
+  .leaflet-control-layers{display:none !important;}
 
   .leaflet-bottom.leaflet-left .leaflet-control{margin-left:10px;margin-bottom:20px}
-
-  /* kill Leaflet +/- just in case (Python also sets zoom_control=False) */
+  /* Hide Leaflet +/- (Python also sets zoom_control=False) */
   .leaflet-control-zoom{display:none !important;}
+
+  @media (max-width:480px){
+    .ava-style{min-width:200px}
+  }
 </style>
 
-<div id="ava-title" class="ava-title">
-  <img class="gif" src="https://media.giphy.com/media/3Xzlefv57zcrVIPPRN/giphy.gif" alt="">
-  <b>Avalanche Scenario Mapper</b><br>
-  <span style="font-size:11px;color:#333">Choose scenario in Layer Control</span>
+<!-- Fake loader -->
+<div id="ava-loader">
+  <div class="loader-box">
+    <img src="https://media.giphy.com/media/3Xzlefv57zcrVIPPRN/giphy.gif" alt="">
+    <div class="loader-title">Avalanche Scenario Mapper</div>
+    <div class="loader-sub">Please wait …</div>
+  </div>
 </div>
+
+<!-- Banner -->
+<div id="ava-banner"><img id="ava-banner-img" src="" alt=""></div>
+
 
 <script>
 (function(){
-  /* ================================
-   *  IMPORTANT STYLE VARIABLES
-   * ================================ */
-  let FILL_OPACITY = 0.30;        // 👈 transparency for all visible features
+  /* ============== IMPORTANT STYLE VARS ============== */
+  let FILL_OPACITY = 0.30;        // transparency for all visible features
   const CONFIG = {
     STROKE_WEIGHT: 0,
-    REL_COLOR: "#ff482e",
+    REL_COLOR: "#ff00ff",
     RES_COLOR: "#1e00ff",
     SIZE_CLASSES: [
-      { color:"#09a2ff", label:"Size 1" },   // 500–2 500
-      { color:"#66ff31", label:""      },   // 2 500–12 500
-      { color:"#fff300", label:"Size 3" },   // 12 500–62 500
-      { color:"#ff0000", label:""      },   // 62 500–1 000 000
-      { color:"#5b0069", label:"Size 5" }   // ≥ 1 000 000
+      { color:"#09a2ff", label:"Size 1" },
+      { color:"#66ff31", label:""      },
+      { color:"#fff300", label:"Size 3"},
+      { color:"#ff0000", label:""      },
+      { color:"#5b0069", label:"Size 5"}
     ],
     HIGHLIGHT_BORDER: "red",
     HIGHLIGHT_WEIGHT: 3.5,
@@ -130,10 +158,14 @@
     HIGHLIGHT_EXTRA_FILL: 0.15,
     HIGHLIGHT_MAX_FILL: 0.55
   };
+  const LOADER_MS = 4600;  // ~4.6s fake loader
 
   const winterUrl = "data/avaScen_Winter_mobile_hex.geojson";
   const springUrl = "data/avaScen_Spring_mobile_hex.geojson";
   const microUrl  = "data/avaScenMaster_avaReportMicroRegionsPilotBrenner_wgs84.geojson";
+  const bannerWinter = "data/avaScenWinter.png";
+  const bannerSpring = "data/avaScenSpring.png";
+
   const START_ZOOM = 14, MIN_ZOOM = 12, MAX_ZOOM = 14;
   const FIT_TO_DATA = false;
   const TITLE_OFF = 4500;
@@ -142,23 +174,34 @@
 
   function waitForVars(maxTries){
     let tries=0, iv=setInterval(()=>{
-      const mapObj=window["map_374582459e8b7093fde179296401718b"], G_W=window["feature_group_80a7f0689998ae4c1b0e7abe30f8f2ef"], G_S=window["feature_group_81ac664e8ebe895d470e00c2aeb78c12"], G_M=window["feature_group_605ad520223d083d872a470374f40c75"];
-      if(mapObj && G_W && G_S && G_M && mapObj.addControl){ clearInterval(iv); boot(mapObj,G_W,G_S,G_M); }
-      else if(++tries>maxTries){ clearInterval(iv); console.error("❌ Leaflet objects not ready."); }
+      const mapObj=window["map_420d44bd8e24fe1c6f4971d5cea7b38b"],
+            G_W=window["feature_group_c0a006664641a21a120a0f80b3ef0bd4"], G_S=window["feature_group_ef82cd91a780d7116686e2e22e6a2a77"], G_M=window["feature_group_f377001f59cf89187530c5c660639dad"],
+            BASE_LIGHT=window["tile_layer_4e3ff615ee8a152794ba4c994729a4a0"], BASE_BERGFEX=window["tile_layer_2ebcac5cdae42ccc94b4bf19942d25d7"];
+      if(mapObj && G_W && G_S && G_M && BASE_LIGHT && BASE_BERGFEX && mapObj.addControl){
+        clearInterval(iv); boot(mapObj,G_W,G_S,G_M,BASE_LIGHT,BASE_BERGFEX);
+      } else if(++tries>maxTries){ clearInterval(iv); console.error("❌ Leaflet objects not ready."); }
     },120);
   }
 
-  function boot(mapObj, G_W, G_S, G_M){
-    let showRel=true, showRes=true, sizeOn=false;
+  function boot(mapObj, G_W, G_S, G_M, BASE_LIGHT, BASE_BERGFEX){
+    let showRel=true, showRes=false, sizeOn=false;   // 👈 default: only Release ON
     let L_W=null, L_S=null, highlighted=null, didFit=false;
+    let scenario='winter';                            // 👈 default: Winter
 
-    // snap & clamp zoom; (+/- controls are disabled from Python via zoom_control=False)
+    // snap & clamp zoom; (+/- controls hidden via CSS and zoom_control=False)
     mapObj.options.zoomSnap=1; mapObj.options.zoomDelta=1;
     mapObj.setZoom(Math.min(Math.max(START_ZOOM, MIN_ZOOM), MAX_ZOOM));
 
     // Add Leaflet scale bar
     if (L && L.control && L.control.scale) {
       L.control.scale({metric:true, imperial:false}).addTo(mapObj);
+    }
+
+    // banner helpers
+    function updateBanner(){
+      const img=document.getElementById('ava-banner-img');
+      if(!img) return;
+      img.src = (scenario==='winter') ? bannerWinter : bannerSpring;
     }
 
     // visibility + styling
@@ -210,43 +253,65 @@
       });
     }
 
-    /* Show panel (bottom-left) */
+    /* Combined Settings panel (bottom-left) */
     const StyleControl=L.Control.extend({
       options:{position:STYLE_POS},
       onAdd:function(map){
         const div=L.DomUtil.create('div','ava-style leaflet-control');
         div.innerHTML=`
-          <div class="hdr">Show Avalanche …</div>
-
-          <!-- Transparency (applies to all visible features) -->
-          <div class="alpha-row">
-            <div class="alpha-btn" data-alpha="0.10">10%</div>
-            <div class="alpha-btn active" data-alpha="0.30">30%</div>
-            <div class="alpha-btn" data-alpha="0.50">50%</div>
+          <div class="hdr" id="ava-hdr">
+            <span>Settings …</span>
+            <span class="caret" id="ava-caret">▾</span>
           </div>
+          <div class="body" id="ava-body">
 
-          <div class="row cb">
-            <label><input id="chk-rel" type="checkbox" checked> Release area</label>
-            <span class="swatch" style="background:${CONFIG.REL_COLOR}"></span>
-          </div>
-          <div class="row cb">
-            <label><input id="chk-res" type="checkbox" checked> Runout area</label>
-            <span class="swatch" style="background:${CONFIG.RES_COLOR}"></span>
-          </div>
+            <!-- Base Layer -->
+            <div class="row" style="margin-top:2px;font-weight:700">Base Layer:</div>
+            <div class="row radio-row">
+              <label><input type="radio" name="base" id="base-light"> Light Gray</label>
+              <label><input type="radio" name="base" id="base-berg" checked> Bergfex Topo</label> <!-- 👈 default bergfex -->
+            </div>
 
-          <hr style="margin:6px 0;border:none;border-top:1px solid #ddd">
+            <!-- Scenario -->
+            <div class="row" style="margin-top:6px;font-weight:700">Choose Scenario:</div>
+            <div class="row radio-row">
+              <label><input type="radio" name="scn" id="scn-winter" checked> Winter</label>
+              <label><input type="radio" name="scn" id="scn-spring"> Spring</label>
+            </div>
 
-          <div class="row cb">
-            <label><input id="chk-size" type="checkbox"> Size (discrete)</label>
-          </div>
+            <hr style="margin:6px 0;border:none;border-top:1px solid #ddd">
 
-          <!-- Size legend -->
-          <div id="legend-size" class="legend-size" style="display:none;">
-            <div id="size-grad" class="size-grad"></div>
-            <div class="size-labels">
-              <span>${CONFIG.SIZE_CLASSES[0].label||"Size 1"}</span>
-              <span>${CONFIG.SIZE_CLASSES[2].label||"Size 3"}</span>
-              <span>${CONFIG.SIZE_CLASSES[4].label||"Size 5"}</span>
+            <!-- Show Avalanche -->
+            <div class="row" style="font-weight:700">Show Avalanche …</div>
+
+            <!-- Transparency (applies to all visible features) -->
+            <div class="alpha-row">
+              <div class="alpha-btn" data-alpha="0.10">10%</div>
+              <div class="alpha-btn active" data-alpha="0.30">30%</div>
+              <div class="alpha-btn" data-alpha="0.50">50%</div>
+            </div>
+
+            <div class="row cb">
+              <label><input id="chk-rel" type="checkbox" checked> Release area</label>
+              <span class="swatch" style="background:${CONFIG.REL_COLOR}"></span>
+            </div>
+            <div class="row cb">
+              <label><input id="chk-res" type="checkbox"> Runout area</label> <!-- 👈 default off -->
+              <span class="swatch" style="background:${CONFIG.RES_COLOR}"></span>
+            </div>
+
+            <div class="row cb">
+              <label><input id="chk-size" type="checkbox"> Size (discrete)</label>
+            </div>
+
+            <!-- Size legend -->
+            <div id="legend-size" class="legend-size" style="display:none;">
+              <div id="size-grad" class="size-grad"></div>
+              <div class="size-labels">
+                <span>${CONFIG.SIZE_CLASSES[0].label||"Size 1"}</span>
+                <span>${CONFIG.SIZE_CLASSES[2].label||"Size 3"}</span>
+                <span>${CONFIG.SIZE_CLASSES[4].label||"Size 5"}</span>
+              </div>
             </div>
           </div>
         `;
@@ -255,6 +320,23 @@
       }
     });
     mapObj.addControl(new StyleControl());
+
+    // Collapsible behavior
+    function initCollapse(){
+      const wrap=document.querySelector('.ava-style');
+      const hdr=document.getElementById('ava-hdr');
+      const caret=document.getElementById('ava-caret');
+      if(!wrap||!hdr||!caret) return;
+
+      // collapsed by default on small screens
+      const shouldCollapse = window.matchMedia && window.matchMedia('(max-width: 480px)').matches;
+      if (shouldCollapse){ wrap.classList.add('collapsed'); caret.textContent='▸'; }
+
+      hdr.addEventListener('click', ()=>{
+        const isCollapsed = wrap.classList.toggle('collapsed');
+        caret.textContent = isCollapsed ? '▸' : '▾';
+      });
+    }
 
     /* Build continuous gradient bar from the 5 class colors */
     function paintSizeGradient(){
@@ -273,6 +355,24 @@
       applyStyleToGeoJSON(L_W); applyStyleToGeoJSON(L_S);
       refreshLegend();
     }
+
+    // Base + Scenario binding
+    function bindBasics(){
+      const rLight=document.getElementById('base-light');
+      const rBerg =document.getElementById('base-berg');
+      const sWin  =document.getElementById('scn-winter');
+      const sSpr  =document.getElementById('scn-spring');
+
+      if (rLight && rBerg){
+        rLight.addEventListener('change', ()=>{ if(rLight.checked){ if(mapObj.hasLayer(BASE_BERGFEX)) mapObj.removeLayer(BASE_BERGFEX); if(!mapObj.hasLayer(BASE_LIGHT)) mapObj.addLayer(BASE_LIGHT); }});
+        rBerg .addEventListener('change', ()=>{ if(rBerg.checked ){ if(mapObj.hasLayer(BASE_LIGHT  )) mapObj.removeLayer(BASE_LIGHT  ); if(!mapObj.hasLayer(BASE_BERGFEX)) mapObj.addLayer(BASE_BERGFEX); }});
+      }
+      if (sWin && sSpr){
+        sWin.addEventListener('change', ()=>{ if(sWin.checked){ scenario='winter'; if(mapObj.hasLayer(G_S)) mapObj.removeLayer(G_S); if(!mapObj.hasLayer(G_W)) mapObj.addLayer(G_W); updateBanner(); reStyleAll(); }});
+        sSpr.addEventListener('change', ()=>{ if(sSpr.checked){ scenario='spring'; if(mapObj.hasLayer(G_W)) mapObj.removeLayer(G_W); if(!mapObj.hasLayer(G_S)) mapObj.addLayer(G_S); updateBanner(); reStyleAll(); }});
+      }
+    }
+
     function bindPanel(){
       const cRel=document.getElementById("chk-rel");
       const cRes=document.getElementById("chk-res");
@@ -289,56 +389,18 @@
           alphas.forEach(b=>b.classList.remove('active'));
           btn.classList.add('active');
           const v=parseFloat(btn.getAttribute('data-alpha')) || 0.3;
-          FILL_OPACITY = v;         // 👈 live change for all layers/modes
+          FILL_OPACITY = v;         // live change for all layers/modes
           reStyleAll();
         });
       });
       return true;
     }
 
-    // Layer control headings & scenario exclusivity
-    function tweakLayerControl(){
-      const panel=document.querySelector('.leaflet-control-layers'); if(!panel) return false;
-      const base=panel.querySelector('.leaflet-control-layers-base');
-      const overlays=panel.querySelector('.leaflet-control-layers-overlays');
-
-      if (base && !panel.querySelector('.ava-lc-hdr.base')){
-        const hdr=document.createElement('div'); hdr.className='ava-lc-hdr base'; hdr.textContent='Base Layer:';
-        base.parentNode.insertBefore(hdr, base);
-      }
-      if (overlays && !panel.querySelector('.ava-lc-hdr.scn')){
-        const hdr2=document.createElement('div'); hdr2.className='ava-lc-hdr scn'; hdr2.textContent='Choose Scenario:';
-        overlays.parentNode.insertBefore(hdr2, overlays);
-      }
-      // hide Microregions from control UI (group stays on map)
-      if (overlays){
-        const items=[...overlays.querySelectorAll('label')];
-        items.forEach(lab=>{
-          const txt=lab.textContent?lab.textContent.trim():"";
-          if (txt==="Microregions"){
-            const li=lab.closest('div'); if(li&&li.parentNode) li.parentNode.removeChild(li);
-          }
-        });
-      }
-      // make Winter/Spring mutually exclusive
-      if (overlays){
-        const inputs=[...overlays.querySelectorAll('input[type="checkbox"]')];
-        const txt=el=>el.nextSibling && el.nextSibling.textContent ? el.nextSibling.textContent.trim() : "";
-        const cbW=inputs.find(i=>txt(i)==="Winter");
-        const cbS=inputs.find(i=>txt(i)==="Spring");
-        if (cbW && cbS){
-          function ensureExclusive(e){
-            if (e.target.checked){
-              const other=(e.target===cbW)?cbS:cbW;
-              if (other.checked) other.click();
-              reStyleAll();
-            }
-          }
-          cbW.addEventListener('change', ensureExclusive);
-          cbS.addEventListener('change', ensureExclusive);
-        }
-      }
-      return true;
+    // helper: hide loader
+    function hideLoaderSoon(){
+      const ld=document.getElementById('ava-loader');
+      if(!ld) return;
+      setTimeout(()=>{ ld.classList.add('hide'); setTimeout(()=>ld.remove(), 380); }, LOADER_MS);
     }
 
     /* Load layers */
@@ -350,11 +412,19 @@
         return L.geoJSON(geo,{style:{color:"#666",weight:1,opacity:0.9,fillOpacity:0}}).addTo(G_M);
       }).catch(()=>null)
     ]).then(()=>{
-      applyStyleToGeoJSON(L_W); applyStyleToGeoJSON(L_S);
-      refreshLegend(); bindPanel();
+      // initial: Winter visible, base = Bergfex, Release only
+      if(mapObj.hasLayer(G_S)) mapObj.removeLayer(G_S);
+      if(!mapObj.hasLayer(G_W)) mapObj.addLayer(G_W);
+      // force bergfex as base at start
+      if(mapObj.hasLayer(BASE_LIGHT)) mapObj.removeLayer(BASE_LIGHT);
+      if(!mapObj.hasLayer(BASE_BERGFEX)) mapObj.addLayer(BASE_BERGFEX);
+      document.getElementById('base-berg')?.setAttribute('checked','checked');
 
-      // add headings/exclusive behavior after LC renders
-      let tries=0, iv=setInterval(()=>{ tries++; if(tweakLayerControl()||tries>40) clearInterval(iv); },120);
+      updateBanner();
+      applyStyleToGeoJSON(L_W); applyStyleToGeoJSON(L_S);
+      paintSizeGradient(); refreshLegend();
+      bindBasics(); bindPanel(); initCollapse();
+      hideLoaderSoon();   // 👈 fade out the fake loader
 
       if(FIT_TO_DATA && !didFit){
         const active=(mapObj.hasLayer(G_W) && L_W)?L_W:((mapObj.hasLayer(G_S) && L_S)?L_S:null);
@@ -362,8 +432,7 @@
         didFit=true;
       }
 
-      const titleEl=document.getElementById("ava-title");
-      if(titleEl){ if(TITLE_OFF<=0) titleEl.classList.add("hidden"); else setTimeout(()=>titleEl.classList.add("hidden"), TITLE_OFF); }
+    
     }).catch(err=>console.error("❌ load error", err));
   }
 
@@ -372,14 +441,14 @@
 </script>
 
     
-            <div class="folium-map" id="map_374582459e8b7093fde179296401718b" ></div>
+            <div class="folium-map" id="map_420d44bd8e24fe1c6f4971d5cea7b38b" ></div>
         
 </body>
 <script>
     
     
-            var map_374582459e8b7093fde179296401718b = L.map(
-                "map_374582459e8b7093fde179296401718b",
+            var map_420d44bd8e24fe1c6f4971d5cea7b38b = L.map(
+                "map_420d44bd8e24fe1c6f4971d5cea7b38b",
                 {
                     center: [46.9914, 11.416055],
                     crs: L.CRS.EPSG3857,
@@ -396,7 +465,7 @@
 
         
     
-            var tile_layer_414fa683b105416ac204655f0649d70a = L.tileLayer(
+            var tile_layer_4e3ff615ee8a152794ba4c994729a4a0 = L.tileLayer(
                 "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                 {
   "minZoom": 0,
@@ -413,10 +482,10 @@
             );
         
     
-            tile_layer_414fa683b105416ac204655f0649d70a.addTo(map_374582459e8b7093fde179296401718b);
+            tile_layer_4e3ff615ee8a152794ba4c994729a4a0.addTo(map_420d44bd8e24fe1c6f4971d5cea7b38b);
         
     
-            var tile_layer_904c072a904caa60b350d0e713ec60b2 = L.tileLayer(
+            var tile_layer_2ebcac5cdae42ccc94b4bf19942d25d7 = L.tileLayer(
                 "https://tiles.bergfex.at/styles/bergfex-osm/{z}/{x}/{y}.jpg",
                 {
   "minZoom": 0,
@@ -433,52 +502,52 @@
             );
         
     
-            tile_layer_904c072a904caa60b350d0e713ec60b2.addTo(map_374582459e8b7093fde179296401718b);
+            tile_layer_2ebcac5cdae42ccc94b4bf19942d25d7.addTo(map_420d44bd8e24fe1c6f4971d5cea7b38b);
         
     
-            var feature_group_80a7f0689998ae4c1b0e7abe30f8f2ef = L.featureGroup(
+            var feature_group_c0a006664641a21a120a0f80b3ef0bd4 = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_80a7f0689998ae4c1b0e7abe30f8f2ef.addTo(map_374582459e8b7093fde179296401718b);
+            feature_group_c0a006664641a21a120a0f80b3ef0bd4.addTo(map_420d44bd8e24fe1c6f4971d5cea7b38b);
         
     
-            var feature_group_81ac664e8ebe895d470e00c2aeb78c12 = L.featureGroup(
+            var feature_group_ef82cd91a780d7116686e2e22e6a2a77 = L.featureGroup(
                 {
 }
             );
         
     
-            var feature_group_605ad520223d083d872a470374f40c75 = L.featureGroup(
+            var feature_group_f377001f59cf89187530c5c660639dad = L.featureGroup(
                 {
 }
             );
         
     
-            feature_group_605ad520223d083d872a470374f40c75.addTo(map_374582459e8b7093fde179296401718b);
+            feature_group_f377001f59cf89187530c5c660639dad.addTo(map_420d44bd8e24fe1c6f4971d5cea7b38b);
         
     
-            var layer_control_274bd56ccfd3cd044e7d8dec55fe58fe_layers = {
+            var layer_control_301ffa9de752d9120a38962de17798ea_layers = {
                 base_layers : {
-                    "Light Gray" : tile_layer_414fa683b105416ac204655f0649d70a,
-                    "Bergfex Topo" : tile_layer_904c072a904caa60b350d0e713ec60b2,
+                    "Light Gray" : tile_layer_4e3ff615ee8a152794ba4c994729a4a0,
+                    "Bergfex Topo" : tile_layer_2ebcac5cdae42ccc94b4bf19942d25d7,
                 },
                 overlays :  {
-                    "Winter" : feature_group_80a7f0689998ae4c1b0e7abe30f8f2ef,
-                    "Spring" : feature_group_81ac664e8ebe895d470e00c2aeb78c12,
+                    "Winter" : feature_group_c0a006664641a21a120a0f80b3ef0bd4,
+                    "Spring" : feature_group_ef82cd91a780d7116686e2e22e6a2a77,
                 },
             };
-            let layer_control_274bd56ccfd3cd044e7d8dec55fe58fe = L.control.layers(
-                layer_control_274bd56ccfd3cd044e7d8dec55fe58fe_layers.base_layers,
-                layer_control_274bd56ccfd3cd044e7d8dec55fe58fe_layers.overlays,
+            let layer_control_301ffa9de752d9120a38962de17798ea = L.control.layers(
+                layer_control_301ffa9de752d9120a38962de17798ea_layers.base_layers,
+                layer_control_301ffa9de752d9120a38962de17798ea_layers.overlays,
                 {
   "position": "topright",
   "collapsed": false,
   "autoZIndex": true,
 }
-            ).addTo(map_374582459e8b7093fde179296401718b);
+            ).addTo(map_420d44bd8e24fe1c6f4971d5cea7b38b);
 
         
 </script>
